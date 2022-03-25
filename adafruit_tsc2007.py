@@ -54,11 +54,11 @@ TSC2007_ADOFF_IRQON = 2
 TSC2007_ADC_12BIT = 0
 TSC2007_ADC_8BIT = 1
 
+
 class TSC2007:
     """
     A driver for the TSC2007 resistive touch sensor.
     """
-
 
     def __init__(self, i2c, address=0x48, irq=None):
         self._i2c = i2c_device.I2CDevice(i2c, address)
@@ -67,7 +67,7 @@ class TSC2007:
             self._irq.switch_to_input(pull=digitalio.Pull.UP)
         self._buf = bytearray(2)
         self._cmd = bytearray(1)
-        self.touch # pylint: disable=pointless-statement
+        self.touch  # pylint: disable=pointless-statement
 
     def command(self, function, power, resolution) -> int:
         """
@@ -86,16 +86,16 @@ class TSC2007:
 
         with self._i2c as i2c:
             i2c.write_then_readinto(self._cmd, self._buf)
-        return (self._buf[0] << 4) | (self._buf[1] >> 4) # 12 bits of data!
+        return (self._buf[0] << 4) | (self._buf[1] >> 4)  # 12 bits of data!
 
     @property
     def touched(self) -> bool:
-        """ Returns whether the panel is touched. If irq pin is set, uses
+        """Returns whether the panel is touched. If irq pin is set, uses
         the pin value. If not, the TSC2007 is polled and pressure is checked"""
         if self._irq:
             return not self._irq.value
         point = self.touch
-        return point['pressure'] > 100
+        return point["pressure"] > 100
 
     @property
     def touch(self) -> dict:
