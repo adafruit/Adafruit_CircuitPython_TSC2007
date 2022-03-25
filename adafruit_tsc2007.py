@@ -16,7 +16,8 @@ Implementation Notes
 
 **Hardware:**
 
-* Works with the Adafruit TSC2007 resistive touch driver. `Purchase one from the Adafruit shop <http://www.adafruit.com/products/5423>`_
+* Works with the Adafruit TSC2007 resistive touch driver.
+  `Purchase one from the Adafruit shop <http://www.adafruit.com/products/5423>`_
 
 **Software and Dependencies:**
 
@@ -28,8 +29,6 @@ Implementation Notes
 """
 
 
-import time
-from micropython import const
 import digitalio
 from adafruit_bus_device import i2c_device
 
@@ -54,7 +53,7 @@ TSC2007_ADOFF_IRQON = 2
 
 TSC2007_ADC_12BIT = 0
 TSC2007_ADC_8BIT = 1
-    
+
 class TSC2007:
     """
     A driver for the TSC2007 resistive touch sensor.
@@ -66,30 +65,33 @@ class TSC2007:
         self._irq = irq
         if self._irq:
             self._irq.switch_to_input(pull=digitalio.Pull.UP)
-        
         self._buf = bytearray(2)
         self._cmd = bytearray(1)
-        self.touch # init registers
+        self.touch # pylint: disable=pointless-statement
 
-    def command(self, function, power, resolution):
-        if not (0 <= function <= 15):
+    def command(self, function, power, resolution) -> int:
+        """
+        Write a command byte to the TSC2007 and read the 2-byte response
+        """
+        if not 0 <= function <= 15:
             raise RuntimeError("Function setting must be between 0 and 15")
-        if not (0 <= power <= 3):
+        if not 0 <= power <= 3:
             raise RuntimeError("Power setting must be between 0 and 3")
-        if not (0 <= resolution <= 1):
+        if not 0 <= resolution <= 1:
             raise RuntimeError("Power setting must be ADC_8BIT or ADC_12BIT")
-        
+
         self._cmd[0] = (function & 0x0F) << 4
         self._cmd[0] |= (power & 0x03) << 2
         self._cmd[0] |= (resolution & 0x01) << 1
-        
+
         with self._i2c as i2c:
             i2c.write_then_readinto(self._cmd, self._buf)
         return (self._buf[0] << 4) | (self._buf[1] >> 4) # 12 bits of data!
-            
 
     @property
     def touched(self) -> bool:
+        """ Returns whether the panel is touched. If irq pin is set, uses
+        the pin value. If not, the TSC2007 is polled and pressure is checked"""
         if self._irq:
             return not self._irq.value
         point = self.touch
@@ -99,10 +101,9 @@ class TSC2007:
     def touch(self) -> dict:
         """ Returns the current touch point"""
         x = self.command(TSC2007_MEASURE_X, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
-        y = self.command(TSC2007_MEASURE_Y, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT);
-        z1 = self.command(TSC2007_MEASURE_Z1, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
-        z2 = self.command(TSC2007_MEASURE_Z1, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
+        y = self.command(TSC2007_MEASURE_Y, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
+        z = self.command(TSC2007_MEASURE_Z1, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
         self.command(TSC2007_MEASURE_TEMP0, TSC2007_POWERDOWN_IRQON, TSC2007_ADC_12BIT)
 
-        point = {"x": x, "y": y, "pressure": z1}
+        point = {"x": x, "y": y, "pressure": z}
         return point
