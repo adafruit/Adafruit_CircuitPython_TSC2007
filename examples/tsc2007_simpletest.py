@@ -3,10 +3,8 @@
 # SPDX-License-Identifier: Unlicense
 
 
-import board
-import board
-import digitalio
 import time
+import board
 
 import adafruit_tsc2007
 
