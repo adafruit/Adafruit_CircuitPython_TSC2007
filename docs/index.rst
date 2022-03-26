@@ -27,9 +27,7 @@ Table of Contents
 .. toctree::
     :caption: Related Products
 
-    Works with the Adafruit TSC2007 resistive touch driver.
-
-    `Purchase one from the Adafruit shop <http://www.adafruit.com/products/5423>`_
+    Works with the Adafruit TSC2007 resistive touch driver. <http://www.adafruit.com/products/5423>
 
 .. toctree::
     :caption: Other Links
