@@ -99,7 +99,7 @@ class TSC2007:
 
     @property
     def touch(self) -> dict:
-        """ Returns the current touch point"""
+        """Returns the current touch point"""
         x = self.command(TSC2007_MEASURE_X, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
         y = self.command(TSC2007_MEASURE_Y, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
         z = self.command(TSC2007_MEASURE_Z1, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
