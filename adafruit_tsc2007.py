@@ -32,7 +32,7 @@ Implementation Notes
 import digitalio
 from adafruit_bus_device import i2c_device
 
-__version__ = "0.0.0-auto.0"
+__version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_TSC2007.git"
 
 TSC2007_MEASURE_TEMP0 = 0
