@@ -7,7 +7,8 @@ import board
 import adafruit_tsc2007
 
 # Use for I2C
-i2c = board.I2C()
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
 irq_dio = None  # don't use an irq pin by default
 # uncomment for optional irq input pin so we don't continuously poll the I2C for touches
