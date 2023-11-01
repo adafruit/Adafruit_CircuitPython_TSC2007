@@ -85,7 +85,7 @@ following command to install:
 
 .. code-block:: shell
 
-    circup install tsc2007
+    circup install adafruit_tsc2007
 
 Or the following command to update an existing version:
 
