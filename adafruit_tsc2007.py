@@ -32,6 +32,13 @@ Implementation Notes
 import digitalio
 from adafruit_bus_device import i2c_device
 
+try:
+    # Used only for typing
+    from typing import Union
+    import busio
+except ImportError:
+    pass
+
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_TSC2007.git"
 
@@ -60,16 +67,31 @@ class TSC2007:
     A driver for the TSC2007 resistive touch sensor.
     """
 
-    def __init__(self, i2c, address=0x48, irq=None):
+    # pylint: disable=too-many-arguments
+    def __init__(
+        self,
+        i2c: busio.I2C,
+        address: int = 0x48,
+        irq: Union[int | None] = None,
+        invert_x: bool = False,
+        invert_y: bool = False,
+        swap_xy: bool = False,
+    ):
         self._i2c = i2c_device.I2CDevice(i2c, address)
         self._irq = irq
         if self._irq:
             self._irq.switch_to_input(pull=digitalio.Pull.UP)
         self._buf = bytearray(2)
         self._cmd = bytearray(1)
+
+        # Settable Properties
+        self._invert_x = invert_x
+        self._invert_y = invert_y
+        self._swap_xy = swap_xy
+
         self.touch  # pylint: disable=pointless-statement
 
-    def command(self, function, power, resolution) -> int:
+    def command(self, function: int, power: int, resolution: int) -> int:
         """
         Write a command byte to the TSC2007 and read the 2-byte response
         """
@@ -105,5 +127,41 @@ class TSC2007:
         z = self.command(TSC2007_MEASURE_Z1, TSC2007_ADON_IRQOFF, TSC2007_ADC_12BIT)
         self.command(TSC2007_MEASURE_TEMP0, TSC2007_POWERDOWN_IRQON, TSC2007_ADC_12BIT)
 
+        if self._invert_x:
+            x = 4095 - x
+
+        if self._invert_y:
+            y = 4095 - y
+
+        if self._swap_xy:
+            x, y = y, x
+
         point = {"x": x, "y": y, "pressure": z}
         return point
+
+    @property
+    def invert_x(self) -> bool:
+        """Whether the X axis is inverted"""
+        return self._invert_x
+
+    @invert_x.setter
+    def invert_x(self, value: bool):
+        self._invert_x = value
+
+    @property
+    def invert_y(self) -> bool:
+        """Whether the Y axis is inverted"""
+        return self._invert_y
+
+    @invert_y.setter
+    def invert_y(self, value: bool):
+        self._invert_y = value
+
+    @property
+    def swap_xy(self) -> bool:
+        """Whether the X and Y axes are swapped"""
+        return self._swap_xy
+
+    @swap_xy.setter
+    def swap_xy(self, value: bool):
+        self._swap_xy = value
