@@ -6,6 +6,7 @@
 import board
 import displayio
 from adafruit_hx8357 import HX8357
+
 import adafruit_tsc2007
 
 # Initialize the Display

@@ -28,13 +28,13 @@ Implementation Notes
 
 """
 
-
 import digitalio
 from adafruit_bus_device import i2c_device
 
 try:
     # Used only for typing
     from typing import Union
+
     import busio
 except ImportError:
     pass
@@ -67,7 +67,6 @@ class TSC2007:
     A driver for the TSC2007 resistive touch sensor.
     """
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         i2c: busio.I2C,
@@ -89,7 +88,7 @@ class TSC2007:
         self._invert_y = invert_y
         self._swap_xy = swap_xy
 
-        self.touch  # pylint: disable=pointless-statement
+        self.touch
 
     def command(self, function: int, power: int, resolution: int) -> int:
         """

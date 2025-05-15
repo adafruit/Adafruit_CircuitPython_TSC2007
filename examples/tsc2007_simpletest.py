@@ -4,6 +4,7 @@
 
 
 import board
+
 import adafruit_tsc2007
 
 # Use for I2C
