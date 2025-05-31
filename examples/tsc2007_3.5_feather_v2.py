@@ -5,6 +5,7 @@
 
 import board
 import displayio
+import fourwire
 from adafruit_hx8357 import HX8357
 
 import adafruit_tsc2007
@@ -16,7 +17,7 @@ spi = board.SPI()
 tft_cs = board.D9
 tft_dc = board.D10
 
-display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
+display_bus = fourwire.FourWire(spi, command=tft_dc, chip_select=tft_cs)
 display = HX8357(display_bus, width=480, height=320)
 
 # Use for I2C
