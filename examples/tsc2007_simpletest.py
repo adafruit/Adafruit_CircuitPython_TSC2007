@@ -21,4 +21,4 @@ while True:
         point = tsc.touch
         if point["pressure"] < 100:  # ignore touches with no 'pressure' as false
             continue
-        print("Touchpoint: (%d, %d, %d)" % (point["x"], point["y"], point["pressure"]))
+        print(f"Touchpoint: ({point['x']}, {point['y']}, {point['pressure']})")
